@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-// Estruturas de dados
+
 typedef enum {
     ESPADAS, COPAS, OUROS, PAUS
 } Naipe;
@@ -20,7 +20,7 @@ typedef struct {
     int pontos;
 } Jogador;
 
-// Variaveis globais
+
 Jogador jogador1, jogador2;
 Carta monte[40];
 int topo_monte;
@@ -30,10 +30,10 @@ int mao_atual;
 bool aumento_pendente;
 int ultimo_aumento_jogador;
 Carta ultima_carta_jogador1, ultima_carta_jogador2;
-int vitorias_mao[2]; // [0] = jogador1, [1] = jogador2
+int vitorias_mao[2]; 
 bool primeira_mao_empatada;
 
-// Prototipos de funcoes
+
 void inicializar_baralho();
 void embaralhar();
 void distribuir_cartas();
@@ -47,7 +47,7 @@ void verificar_fim_mao();
 void verificar_fim_rodada();
 void verificar_fim_jogo();
 
-// Funcoes principais
+
 void inicializar_baralho() {
     int i = 0;
     for (Naipe n = ESPADAS; n <= PAUS; n++) {
@@ -105,20 +105,20 @@ void iniciar_rodada() {
 }
 
 int comparar_cartas(Carta c1, Carta c2) {
-    // Cartas especiais
-    if (c1.valor == 4 && c1.naipe == PAUS) return 1;  // Zap sempre ganha
+    
+    if (c1.valor == 4 && c1.naipe == PAUS) return 1;  
     if (c2.valor == 4 && c2.naipe == PAUS) return -1;
     
-    if (c1.valor == 7 && c1.naipe == COPAS) return 1; // 7 de copas
+    if (c1.valor == 7 && c1.naipe == COPAS) return 1; 
     if (c2.valor == 7 && c2.naipe == COPAS) return -1;
     
-    if (c1.valor == 1 && c1.naipe == ESPADAS) return 1; // Espadao
+    if (c1.valor == 1 && c1.naipe == ESPADAS) return 1; 
     if (c2.valor == 1 && c2.naipe == ESPADAS) return -1;
     
-    if (c1.valor == 1 && c1.naipe == PAUS) return 1;   // Pe
+    if (c1.valor == 1 && c1.naipe == PAUS) return 1;   
     if (c2.valor == 1 && c2.naipe == PAUS) return -1;
     
-    // Ordem normal: 7, 6, 5, 4, 3, 2, 12, 11, 10
+    
     int ordem[] = {0, 0, 6, 5, 4, 3, 2, 1, 0, 0, 9, 8, 7};
     
     int rank1 = ordem[c1.valor];
@@ -126,7 +126,7 @@ int comparar_cartas(Carta c1, Carta c2) {
     
     if (rank1 > rank2) return 1;
     if (rank1 < rank2) return -1;
-    return 0; // empate
+    return 0; 
 }
 
 void mostrar_carta(Carta c) {
@@ -191,7 +191,7 @@ void processar_acao(int jogador, int acao) {
     Jogador *adversario = (jogador == 1) ? &jogador2 : &jogador1;
     
     switch (acao) {
-        case 1: // Jogar carta
+        case 1: 
             if (aumento_pendente) {
                 printf("Voce precisa primeiro aceitar ou recusar o aumento!\n");
                 return;
@@ -206,7 +206,7 @@ void processar_acao(int jogador, int acao) {
             carta_idx--;
             Carta carta_jogada = j->cartas[carta_idx];
             
-            // Remove carta da mao do jogador
+            
             for (int i = carta_idx; i < j->num_cartas - 1; i++) {
                 j->cartas[i] = j->cartas[i+1];
             }
@@ -223,7 +223,7 @@ void processar_acao(int jogador, int acao) {
             printf("\n");
             break;
             
-        case 2: // Aumentar
+        case 2: 
             if (aumento_pendente && ultimo_aumento_jogador == jogador) {
                 printf("Voce ja pediu aumento!\n");
                 return;
@@ -244,7 +244,7 @@ void processar_acao(int jogador, int acao) {
             ultimo_aumento_jogador = jogador;
             break;
             
-        case 3: // Aceitar aumento
+        case 3: 
             if (!aumento_pendente || ultimo_aumento_jogador == jogador) {
                 printf("Nao ha aumento para aceitar!\n");
                 return;
@@ -254,14 +254,14 @@ void processar_acao(int jogador, int acao) {
             aumento_pendente = false;
             break;
             
-        case 4: // Desistir
+        case 4: 
             printf("Voce desistiu da rodada. O adversario ganha %d ponto(s).\n", valor_rodada);
             adversario->pontos += valor_rodada;
             verificar_fim_jogo();
             iniciar_rodada();
             break;
             
-        case 0: // Terminar turno
+        case 0: 
             if (aumento_pendente && ultimo_aumento_jogador != jogador) {
                 printf("Voce precisa responder ao pedido de aumento!\n");
                 return;
@@ -280,7 +280,7 @@ void processar_acao(int jogador, int acao) {
 }
 
 void verificar_fim_mao() {
-    // Verifica se ambos jogaram cartas
+    
     if (ultima_carta_jogador1.valor == 0 || ultima_carta_jogador2.valor == 0) {
         return;
     }
@@ -300,16 +300,16 @@ void verificar_fim_mao() {
         }
     }
     
-    // Resetar cartas jogadas
+    
     ultima_carta_jogador1.valor = 0;
     ultima_carta_jogador2.valor = 0;
     
-    // Verificar condicoes para fim da rodada
+   
     if (mao_atual == 1 && vitorias_mao[0] + vitorias_mao[1] == 1) {
-        // Primeira mao teve um vencedor
+        
         mao_atual++;
     } else if (mao_atual == 1 && primeira_mao_empatada) {
-        // Primeira mao empatou
+        
         mao_atual++;
     } else if (mao_atual == 2) {
         verificar_fim_rodada();
@@ -344,14 +344,14 @@ void verificar_fim_jogo() {
 }
 
 int main() {
-    // Inicializacao do jogo
+  
     jogador1.pontos = 0;
     jogador2.pontos = 0;
     rodada_atual = 0;
     
     iniciar_rodada();
     
-    // Loop principal do jogo
+  
     int jogador_atual = 1;
     while (1) {
         jogar_turno(jogador_atual);
